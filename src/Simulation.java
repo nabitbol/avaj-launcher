@@ -1,4 +1,5 @@
 public class Simulation {
+    
 
     public static void main(String[] args) {
         // int numberOfArguments;
@@ -12,6 +13,9 @@ public class Simulation {
         tower.register(3);
         tower.conditionChanged();
 
+        WeatherProvider weatherProvider = WeatherProvider.getWeatherProvider();
+        String currentWeather = weatherProvider.getCurrentWeather();
+        System.out.println("Random generated weather: " + currentWeather);
     }
 
 }
