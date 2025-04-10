@@ -1,4 +1,6 @@
 
+import avaj_launcher.util.CoordinatesValidator;
+
 class Coordinates {
 
     private int longitude;
@@ -6,6 +8,7 @@ class Coordinates {
     private int height;
 
     public Coordinates(int p_longitude, int p_latitude, int p_height) {
+        CoordinatesValidator.validateCoordinates(p_longitude, p_latitude, p_height);
         this.longitude = p_longitude;
         this.latitude = p_latitude;
         this.height = p_height;
