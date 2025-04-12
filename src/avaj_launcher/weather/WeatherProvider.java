@@ -1,3 +1,7 @@
+package avaj_launcher.weather;
+
+import avaj_launcher.aircraft.Coordinates;
+
 public class WeatherProvider {
 
     private static WeatherProvider weatherProvider;
@@ -8,15 +12,15 @@ public class WeatherProvider {
         this.weather = new String[4];
 
         System.arraycopy(weatherIntializer,
-                            0,
-                            this.weather,
-                            0,
-                            weatherIntializer.length);
+                0,
+                this.weather,
+                0,
+                weatherIntializer.length);
     }
 
     /*
     * Implemented according to the singleton stereotype
-    */
+     */
     public static WeatherProvider getWeatherProvider() {
         if (weatherProvider == null) {
             weatherProvider = new WeatherProvider();
@@ -25,7 +29,7 @@ public class WeatherProvider {
     }
 
     public String getCurrentWeather() {
-        int index = (int)(Math.random() * 4);
+        int index = (int) (Math.random() * 4);
 
         return this.weather[index];
     }
