@@ -17,21 +17,17 @@ This project aims to teach the basics of the Java programming language. To make 
 
 Also, this project requests to build two classes following the singleton pattern, which nowadays is considered an anti-pattern and its usage has started to decline in Java community. To learn more about ['Singleton as an anti-pattern click here.'](https://www.michaelsafyan.com/tech/design/patterns/singleton).
 
-Following my understanding, the `Tower`, `WeatherTower`, and `Flyable` aircraft try to follow the Observer design pattern. We can deduce this based on this information:
--  In `Tower`, the `Flyable` list is named **observers**.
--  `Tower` exposes a `conditionChanged` method that should notify the `Flyable` observers.
--  This method is `protected`, which allows `WeatherTower` to use it.
-
-The UML diagram specifies that the `Flyable`'s `observers` list within the `Tower` class should be private. This creates a challenge: `WeatherTower` is responsible for accessing weather data, but with `private` observers, it cannot directly provide this data to the `Flyable` objects. To address this, the design includes a `public` `getWeather` method in `WeatherTower`, allowing each `Flyable` to request weather information relevant to its position by calling this method within its `updateCondition` method. This raises a design question: Should the `Flyable` objects be responsible for fetching weather data, or should the `WeatherTower` supply the weather information during each weather change notification?
+Beside added method and attribut which is allowed by the subject. I decided to make on one change on the diagram, is the return value from the `AircraftFactory`
+It make more sens for me that `AircraftFactory` throw `Aircraft` than `Flyable`.
 
 # Roadmap
 
 ## Mandatory
-- [ ] Implement data structures according to the UML diagram provided by the subject. **WIP**
+- [x] Implement data structures according to the UML diagram provided by the subject. **WIP**
 - [x] Implement the simulation algorithm.
-- [ ] Parse the input file describing the simulation:
-    - [ ] The number of iterations.
-    - [ ] The type of aircraft and their coordinates.
+- [x] Parse the input file describing the simulation:
+    - [x] The number of iterations.
+    - [x] The type of aircraft and their coordinates.
 - [x] Package the project.
 
 ## Bonus
@@ -41,3 +37,4 @@ My bonus
 - [ ] Parallelize the simulation:
     - [ ] Add thread safety to the singletons.
 - [ ] Get weather from the OpenWeatherMap API.
+- [ ] Add a UI to the simulation
