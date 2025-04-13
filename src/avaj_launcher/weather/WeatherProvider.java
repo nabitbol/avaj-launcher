@@ -2,20 +2,12 @@ package avaj_launcher.weather;
 
 import avaj_launcher.aircraft.Coordinates;
 
-public class WeatherProvider {
+class WeatherProvider {
 
     private static WeatherProvider weatherProvider;
-    private String[] weather;
+    private String[] weather = {"RAIN", "FOG", "SUN", "SNOW"};
 
     private WeatherProvider() {
-        String[] weatherIntializer = {"RAIN", "FOG", "SUN", "SNOW"};
-        this.weather = new String[4];
-
-        System.arraycopy(weatherIntializer,
-                0,
-                this.weather,
-                0,
-                weatherIntializer.length);
     }
 
     /*
