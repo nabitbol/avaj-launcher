@@ -1,4 +1,6 @@
 
+import avaj_launcher.aircraft.Aircraft;
+import avaj_launcher.aircraft.Balloon;
 import avaj_launcher.aircraft.Coordinates;
 import avaj_launcher.aircraft.Helicopter;
 import avaj_launcher.aircraft.JetPlane;
@@ -25,12 +27,17 @@ public class Simulation {
             final long id2 = 132;
             final String name2 = "Falcon";
 
+            final long id3 = 135;
+
             WeatherTower control = new WeatherTower();
 
             Helicopter aircraft = new Helicopter(id, name, coordinatesInstance);
             JetPlane aircraft2 = new JetPlane(id2, name2, coordinatesInstance2);
+            Aircraft aircraft3 = new Balloon(id3, name2, coordinatesInstance2);
+
             aircraft.registerTower(control);
             aircraft2.registerTower(control);
+            aircraft3.registerTower(control);
 
             int i = 0;
             while (i < 20) {
