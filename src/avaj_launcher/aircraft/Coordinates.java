@@ -1,7 +1,8 @@
+package avaj_launcher.aircraft;
 
 import avaj_launcher.util.CoordinatesValidator;
 
-class Coordinates {
+public class Coordinates {
 
     private int longitude;
     private int latitude;
