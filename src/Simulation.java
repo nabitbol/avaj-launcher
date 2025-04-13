@@ -1,48 +1,104 @@
 
+import avaj_launcher.aircraft.Aircraft;
 import avaj_launcher.aircraft.AircraftFactory;
 import avaj_launcher.aircraft.Coordinates;
-import avaj_launcher.aircraft.Flyable;
 import avaj_launcher.exceptions.InvalidCoordinateValueException;
 import avaj_launcher.weather.WeatherTower;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Simulation {
 
+    public static boolean verifyArgs(String[] args) {
+        if (args.length != 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void simulationLoop(WeatherTower control, int itterationNumber) {
+        int itterrationCount = 0;
+        while (itterrationCount < itterationNumber) {
+            control.changeWeather();
+            itterrationCount++;
+        }
+    }
+
+    public static void handleExceptions(Exception e, int countLine) {
+        switch (e) {
+            case IOException exception ->
+                System.err.printf("Error: input file: unable to open %s\n",
+                        exception.getMessage()
+                );
+            case InvalidCoordinateValueException exception ->
+                System.err.printf("Error: parsing(line %d): %s\n",
+                        countLine,
+                        exception.getMessage()
+                );
+            case NumberFormatException exception ->
+                System.err.printf("Error: parsing(line %d): Invalid coordinates %s\n",
+                        countLine,
+                        exception.getMessage().toLowerCase()
+                );
+            default ->
+                System.err.println("Error: default:" + e.getMessage());
+        };
+        System.exit(0);
+    }
+
     public static void main(String[] args) {
-        final int longitude = 4;
-        final int latitude = -89;
-        final int height = 10;
+        WeatherTower control = new WeatherTower();
+        int itterationNumber = 0;
+        int countLine = 0;
 
-        final int longitude2 = 2;
-        final int latitude2 = 3;
-        final int height2 = 20;
-        try {
+        if (!verifyArgs(args)) {
+            System.err.println("Invalid number of arguments");
+            System.exit(0);
+        }
 
+        Path inputFile = Paths.get(args[0]);
+
+        try (BufferedReader reader = Files.newBufferedReader(inputFile);) {
             AircraftFactory aircraftFactory = AircraftFactory.getAircraftFactory();
+            String line;
 
-            Coordinates coordinatesInstance = new Coordinates(longitude, latitude, height);
-            final String name = "Falcon";
+            while ((line = reader.readLine()) != null) {
+                if (countLine == 0) {
+                    itterationNumber = Integer.parseInt(line);
+                    countLine++;
+                    continue;
+                }
 
-            Coordinates coordinatesInstance2 = new Coordinates(longitude2, latitude2, height2);
-            final String name2 = "Falcon";
+                String[] params = line.split(" ");
 
-            Flyable aircraft = aircraftFactory.newAircraft("Helicopter", name, coordinatesInstance);
-            Flyable aircraft2 = aircraftFactory.newAircraft("JetPlane", name2, coordinatesInstance2);
-            Flyable aircraft3 = aircraftFactory.newAircraft("Balloon", name, coordinatesInstance2);
+                Coordinates aircraftCoordinates = new Coordinates(
+                        Integer.parseInt(params[2]),
+                        Integer.parseInt(params[3]),
+                        Integer.parseInt(params[4]));
 
-            WeatherTower control = new WeatherTower();
+                Aircraft aircraft = aircraftFactory.newAircraft(
+                        params[0],
+                        params[1],
+                        aircraftCoordinates
+                );
 
-            aircraft.registerTower(control);
-            aircraft2.registerTower(control);
-            aircraft3.registerTower(control);
+                aircraft.registerTower(control);
 
-            int i = 0;
-            while (i < 20) {
-                control.changeWeather();
-                i++;
+                countLine++;
             }
 
+        } catch (Exception e) {
+            handleExceptions(e, countLine);
+        }
+
+        try {
+            simulationLoop(control, itterationNumber);
         } catch (InvalidCoordinateValueException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
+            System.exit(0);
         }
 
     }

@@ -1,6 +1,7 @@
 package avaj_launcher.util;
 
-import avaj_launcher.exceptions.*;
+import avaj_launcher.exceptions.InvalidCoordinateValueException;
+import avaj_launcher.exceptions.InvalidCoordinateValueType;
 
 public class CoordinatesValidator {
 

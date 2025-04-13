@@ -24,6 +24,12 @@ public abstract class Aircraft extends Flyable {
         }
     }
 
+    public Aircraft(long p_id, String p_name, Coordinates p_coordinates) {
+        this.id = p_id;
+        this.name = p_name;
+        this.coordinates = p_coordinates;
+    }
+
     public long getId() {
         return this.id;
     }
@@ -118,12 +124,6 @@ public abstract class Aircraft extends Flyable {
             default ->
                 new Coordinates(0, 0, 0);
         };
-    }
-
-    public Aircraft(long p_id, String p_name, Coordinates p_coordinates) {
-        this.id = p_id;
-        this.name = p_name;
-        this.coordinates = p_coordinates;
     }
 
 }

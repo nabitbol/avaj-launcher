@@ -27,9 +27,9 @@ public class JetPlane extends Aircraft {
                 this.coordinates.getHeight()
         );
 
-        System.out.printf("%s#%s (%d): %s \n", AIRCRAFT_TYPE.getDisplayName(), this.name, this.id, LOGS.get(weather));
+        System.out.printf("%s#%s(%d): %s \n", AIRCRAFT_TYPE.getDisplayName(), this.name, this.id, LOGS.get(weather));
         if (this.coordinates.getHeight() == 0) {
-            System.out.printf("%s#%s (%d): landing.\n", AIRCRAFT_TYPE.getDisplayName(), this.name, this.id);
+            System.out.printf("%s#%s(%d): landing.\n", AIRCRAFT_TYPE.getDisplayName(), this.name, this.id);
             this.weatherTower.unregister(this);
         }
     }
