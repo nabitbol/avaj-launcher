@@ -28,11 +28,11 @@ The UML diagram specifies that the `Flyable`'s `observers` list within the `Towe
 
 ## Mandatory
 - [ ] Implement data structures according to the UML diagram provided by the subject. **WIP**
-- [ ] Implement the simulation algorithm.
+- [x] Implement the simulation algorithm.
 - [ ] Parse the input file describing the simulation:
     - [ ] The number of iterations.
     - [ ] The type of aircraft and their coordinates.
-- [ ] Package the project. **WIP**
+- [x] Package the project.
 
 ## Bonus
 - [x] Create your own custom exceptions for treating abnormal behavior.
