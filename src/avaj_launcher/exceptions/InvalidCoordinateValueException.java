@@ -2,7 +2,7 @@ package avaj_launcher.exceptions;
 
 import java.util.Map;
 
-public class InvalidCoordinateValueException extends RuntimeException {
+public class InvalidCoordinateValueException extends IllegalArgumentException {
 
     public InvalidCoordinateValueType type;
     private static final Map<InvalidCoordinateValueType, String> errors = Map.of(
@@ -12,7 +12,7 @@ public class InvalidCoordinateValueException extends RuntimeException {
     );
 
     public InvalidCoordinateValueException(InvalidCoordinateValueType type) {
-        super("Error: " + errors.get(type));
+        super(errors.get(type));
         this.type = type;
     }
 

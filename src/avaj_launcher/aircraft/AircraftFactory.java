@@ -15,19 +15,20 @@ public class AircraftFactory {
         return aircraftFactory;
     }
 
-    public Flyable newAircraft(String Type, String p_name, Coordinates p_coordinates) {
+    public Aircraft newAircraft(String p_type, String p_name, Coordinates p_coordinates) {
         lastId += 1;
         long newAircraftId = lastId;
 
-        return switch (Type) {
+        return switch (p_type) {
             case "Helicopter" ->
                 new Helicopter(newAircraftId, p_name, p_coordinates);
-            case "Jetplane" ->
+            case "JetPlane" ->
                 new JetPlane(newAircraftId, p_name, p_coordinates);
             case "Balloon" ->
                 new Balloon(newAircraftId, p_name, p_coordinates);
             default ->
-                new Helicopter(newAircraftId, p_name, p_coordinates);
+                throw new IllegalArgumentException("Invalid aircraft type " + p_type);
         };
     }
+
 }
