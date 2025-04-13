@@ -1,6 +1,6 @@
 
 import avaj_launcher.aircraft.Coordinates;
-import avaj_launcher.aircraft.Flyable;
+import avaj_launcher.aircraft.Helicopter;
 import avaj_launcher.exceptions.InvalidCoordinateValueException;
 import avaj_launcher.weather.WeatherTower;
 
@@ -11,25 +11,31 @@ public class Simulation {
         final int latitude = -89;
         final int height = 10;
 
+        final int longitude2 = 100;
+        final int latitude2 = -89;
+        final int height2 = 10;
         try {
 
             Coordinates coordinatesInstance = new Coordinates(longitude, latitude, height);
-            final String output = String.format("longitude: %d\nlatitude: %d\nheight: %d",
-                    coordinatesInstance.getLongitude(),
-                    coordinatesInstance.getLatitude(),
-                    coordinatesInstance.getHeight());
-            System.out.println(output);
+            final long id = 133;
+            final String name = "Falcon";
+
+            Coordinates coordinatesInstance2 = new Coordinates(longitude2, latitude2, height2);
+            final long id2 = 132;
+            final String name2 = "Falcon";
 
             WeatherTower control = new WeatherTower();
 
-            // control.register(1);
-            // control.register(1);
-            // control.register(2);
-            // control.register(3);
-            control.changeWeather();
+            Helicopter aircraft = new Helicopter(id, name, coordinatesInstance);
+            Helicopter aircraft2 = new Helicopter(id2, name2, coordinatesInstance2);
+            aircraft.registerTower(control);
+            aircraft2.registerTower(control);
 
-            Flyable test = new Flyable();
-            test.registerTower(control);
+            int i = 0;
+            while (i < 20) {
+                control.changeWeather();
+                i++;
+            }
 
         } catch (InvalidCoordinateValueException e) {
             System.out.println(e.getMessage());

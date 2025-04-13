@@ -12,7 +12,7 @@ public class Coordinates {
         CoordinatesValidator.validateCoordinates(p_longitude, p_latitude, p_height);
         this.longitude = p_longitude;
         this.latitude = p_latitude;
-        this.height = p_height;
+        this.height = (p_height > 100) ? 100 : p_height;
     }
 
     public int getLongitude() {
