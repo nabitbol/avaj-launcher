@@ -3,11 +3,13 @@ package avaj_launcher.weather;
 import java.util.ArrayList;
 import java.util.List;
 
+import avaj_launcher.aircraft.Flyable;
+
 class Tower {
 
-    private List<Integer> observers;
+    private List<Flyable> observers;
 
-    private boolean isRegistered(int observer) {
+    private boolean isRegistered(Flyable observer) {
         return this.observers.contains(observer);
     }
 
@@ -15,7 +17,7 @@ class Tower {
         this.observers = new ArrayList<>();
     }
 
-    public void register(int observer) {
+    public void register(Flyable observer) {
         if (isRegistered(observer)) {
             System.out.println("Error: " + observer + " already registered");
         } else {
@@ -27,13 +29,12 @@ class Tower {
     * TODO
     * Check if exception is better to handle notRegistered observer
      */
-    public void unregister(int observer) {
-        int observerToRemove;
+    public void unregister(Flyable observer) {
 
         if (!isRegistered(observer)) {
             System.out.println("Error: " + observer + " Doesn't exist");
         } else {
-            observerToRemove = this.observers.indexOf(observer);
+            var observerToRemove = this.observers.indexOf(observer);
             this.observers.remove(observerToRemove);
         }
     }

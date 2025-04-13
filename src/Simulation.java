@@ -1,5 +1,6 @@
 
 import avaj_launcher.aircraft.Coordinates;
+import avaj_launcher.aircraft.Flyable;
 import avaj_launcher.exceptions.InvalidCoordinateValueException;
 import avaj_launcher.weather.WeatherTower;
 
@@ -21,11 +22,14 @@ public class Simulation {
 
             WeatherTower control = new WeatherTower();
 
-            control.register(1);
-            control.register(1);
-            control.register(2);
-            control.register(3);
+            // control.register(1);
+            // control.register(1);
+            // control.register(2);
+            // control.register(3);
             control.changeWeather();
+
+            Flyable test = new Flyable();
+            test.registerTower(control);
 
         } catch (InvalidCoordinateValueException e) {
             System.out.println(e.getMessage());
