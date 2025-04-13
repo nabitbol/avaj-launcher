@@ -1,13 +1,14 @@
 package avaj_launcher.weather;
 
+import avaj_launcher.aircraft.Flyable;
 import java.util.ArrayList;
 import java.util.List;
 
 class Tower {
 
-    private List<Integer> observers;
+    private List<Flyable> observers;
 
-    private boolean isRegistered(int observer) {
+    protected boolean isRegistered(Flyable observer) {
         return this.observers.contains(observer);
     }
 
@@ -15,27 +16,17 @@ class Tower {
         this.observers = new ArrayList<>();
     }
 
-    public void register(int observer) {
-        if (isRegistered(observer)) {
-            System.out.println("Error: " + observer + " already registered");
-        } else {
-            this.observers.add(observer);
-        }
+    public void register(Flyable observer) {
+        this.observers.add(observer);
     }
 
     /*
     * TODO
     * Check if exception is better to handle notRegistered observer
      */
-    public void unregister(int observer) {
-        int observerToRemove;
-
-        if (!isRegistered(observer)) {
-            System.out.println("Error: " + observer + " Doesn't exist");
-        } else {
-            observerToRemove = this.observers.indexOf(observer);
-            this.observers.remove(observerToRemove);
-        }
+    public void unregister(Flyable observer) {
+        var observerToRemove = this.observers.indexOf(observer);
+        this.observers.remove(observerToRemove);
     }
 
     /*
@@ -43,8 +34,8 @@ class Tower {
     * implement the condition changing alteration according to the subject
      */
     protected void conditionChanged() {
-        for (var observer : observers) {
-            System.out.println("Todo update condition: " + observer);
+        for (int i = 0; i < observers.size(); i++) {
+            observers.get(i).updateConditions();
         }
     }
 

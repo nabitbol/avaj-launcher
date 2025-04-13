@@ -20,8 +20,10 @@ class WeatherProvider {
         return weatherProvider;
     }
 
-    public String getCurrentWeather() {
-        int index = (int) (Math.random() * 4);
+    public String getCurrentWeather(Coordinates p_coordinates) {
+        int index = Math.abs((p_coordinates.getLatitude()
+                + p_coordinates.getLongitude()
+                + p_coordinates.getHeight()) % 4);
 
         return this.weather[index];
     }
