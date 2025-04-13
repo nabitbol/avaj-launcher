@@ -23,7 +23,7 @@ It make more sens for me that `AircraftFactory` throw `Aircraft` than `Flyable`.
 # Roadmap
 
 ## Mandatory
-- [x] Implement data structures according to the UML diagram provided by the subject. **WIP**
+- [x] Implement data structures according to the UML diagram provided by the subject.
 - [x] Implement the simulation algorithm.
 - [x] Parse the input file describing the simulation:
     - [x] The number of iterations.
@@ -33,7 +33,7 @@ It make more sens for me that `AircraftFactory` throw `Aircraft` than `Flyable`.
 ## Bonus
 - [x] Create your own custom exceptions for treating abnormal behavior.
 My bonus
-- [ ] Incorporate a Makefile to build the project.
+- [x] Incorporate a Makefile to build the project.
 - [ ] Parallelize the simulation:
     - [ ] Add thread safety to the singletons.
 - [ ] Get weather from the OpenWeatherMap API.
