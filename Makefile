@@ -22,11 +22,19 @@ PACKAGE_DIRS	=	$(shell find $(SRC_DIR) -type d)
 # Find all .java files in the source directories
 SRC			=	$(shell find $(PACKAGE_DIRS) -name "*.java")
 
+# Find Simulation.java and SimulationBonus.java at the top level of src
+SIMULATION_SRC = $(wildcard $(SRC_DIR)/Simulation.java)
+SIMULATION_BONUS_SRC = $(wildcard $(SRC_DIR)/SimulationBonus.java)
+
 # Output directory for compiled classes
 BIN_DIR		=	bin
 
-# Create a list of .class files corresponding to the .java files
-OBJ			=	$(patsubst $(SRC_DIR)/%.java,$(BIN_DIR)/%.class,$(SRC))
+# Create a list of .class files for regular sources
+OBJ			=	$(patsubst $(SRC_DIR)/%.java,$(BIN_DIR)/%.class,$(filter-out $(SIMULATION_SRC) $(SIMULATION_BONUS_SRC), $(SRC)))
+
+# Create .class files for Simulation.java and SimulationBonus.java
+SIMULATION_OBJ = $(patsubst $(SRC_DIR)/%.java,$(BIN_DIR)/%.class,$(SIMULATION_SRC))
+SIMULATION_BONUS_OBJ = $(patsubst $(SRC_DIR)/%.java,$(BIN_DIR)/%.class,$(SIMULATION_BONUS_SRC))
 
 #############################################################################
 #
@@ -45,36 +53,69 @@ JAVACFLAGS	=	-g
 
 .DEFAULT_GOAL = all
 
-# Build target: create the executable (runs the main class)
-$(NAME): $(OBJ)
-	@echo -e "-----\nCreating Executable $(_YELLOW)$@$(_WHITE) ... \c"
+# Build target: create the executable (runs the main Simulation)
+$(NAME): $(OBJ) $(SIMULATION_OBJ)
+	@echo -e "-----\nCreating Executable $(_YELLOW)$@$(_WHITE) ..."
 	@mkdir -p $(BIN_DIR)
 	@echo -e "$(_GREEN)DONE$(_NC)\n-----"
-	@echo -e "$(_BLUE)Running $(_YELLOW)Simulation$(_WHITE) with ../scenario.txt ... \c"
-	@$(JAVA) -cp $(BIN_DIR) Simulation ../scenario.txt
+
+# Run target for the main Simulation
+run: $(NAME)
+	@echo -e "$(_BLUE)Running $(_YELLOW)Simulation$(_WHITE) with ./scenario.txt ..."
+	@$(JAVA) -cp $(BIN_DIR) Simulation ./scenario.txt
 	@echo -e "$(_GREEN)DONE$(_NC)\n-----"
 
-# Build .class files
+# Build target: create the bonus executable (runs the SimulationBonus)
+bonus: $(OBJ) $(SIMULATION_BONUS_OBJ)
+	@echo -e "-----\nCreating Bonus Executable $(_YELLOW)$(NAME)_bonus$(_WHITE) ..."
+	@mkdir -p $(BIN_DIR)
+	@echo -e "$(_GREEN)DONE$(_NC)\n-----"
+
+# Run target for the bonus Simulation
+runBonus: bonus
+	@echo -e "$(_BLUE)Running $(_YELLOW)SimulationBonus$(_WHITE) with ./scenario.txt ..."
+	@$(JAVA) -cp $(BIN_DIR) SimulationBonus ./scenario.txt 
+	@echo -e "$(_GREEN)DONE$(_NC)\n-----"
+
+# Build .class files for regular sources
 $(BIN_DIR)/%.class: $(SRC_DIR)/%.java
 	@echo -e "Compiling $(_YELLOW)$<$(_WHITE) ... \c"
 	@mkdir -p $(BIN_DIR)/$(shell dirname $@)
 	@$(JAVAC) $(JAVACFLAGS) -d $(BIN_DIR) -sourcepath $(SRC_DIR) $<
 	@echo -e "$(_GREEN)DONE$(_WHITE)"
 
+# Build .class file for Simulation.java
+$(BIN_DIR)/Simulation.class: $(SRC_DIR)/Simulation.java
+	@echo -e "Compiling $(_YELLOW)$<$(_WHITE) ... \c"
+	@mkdir -p $(BIN_DIR)
+	@$(JAVAC) $(JAVACFLAGS) -d $(BIN_DIR) -sourcepath $(SRC_DIR) $<
+	@echo -e "$(_GREEN)DONE$(_WHITE)"
+
+# Build .class file for SimulationBonus.java
+$(BIN_DIR)/SimulationBonus.class: $(SRC_DIR)/SimulationBonus.java
+	@echo -e "Compiling $(_YELLOW)$<$(_WHITE) ... \c"
+	@mkdir -p $(BIN_DIR)
+	@$(JAVAC) $(JAVACFLAGS) -d $(BIN_DIR) -sourcepath $(SRC_DIR) $<
+	@echo -e "$(_GREEN)DONE$(_WHITE)"
+
 # Build all targets (compile all .java files)
-all: $(OBJ)
-	@echo -e "$(_GREEN)All Java files compiled successfully.$(_NC)"
+all: $(OBJ) $(SIMULATION_OBJ)
 
 # Show macro details
 show:
 	@echo -e "$(_BLUE)SRC_DIR :\n$(_YELLOW)$(SRC_DIR)$(_WHITE)"
 	@echo -e "$(_BLUE)PACKAGE_DIRS :\n$(_YELLOW)$(PACKAGE_DIRS)$(_WHITE)"
 	@echo -e "$(_BLUE)SRC :\n$(_YELLOW)$(SRC)$(_WHITE)"
+	@echo -e "$(_BLUE)SIMULATION_SRC :\n$(_YELLOW)$(SIMULATION_SRC)$(_WHITE)"
+	@echo -e "$(_BLUE)SIMULATION_BONUS_SRC :\n$(_YELLOW)$(SIMULATION_BONUS_SRC)$(_WHITE)"
 	@echo -e "$(_BLUE)OBJ :\n$(_YELLOW)$(OBJ)$(_WHITE)"
+	@echo -e "$(_BLUE)SIMULATION_OBJ :\n$(_YELLOW)$(SIMULATION_OBJ)$(_WHITE)"
+	@echo -e "$(_BLUE)SIMULATION_BONUS_OBJ :\n$(_YELLOW)$(SIMULATION_BONUS_OBJ)$(_WHITE)"
 	@echo -e "$(_BLUE)JAVACFLAGS :\n$(_YELLOW)$(JAVACFLAGS)$(_WHITE)"
 	@echo -e "$(_BLUE)BIN_DIR :\n$(_YELLOW)$(BIN_DIR)$(_WHITE)\n-----"
 	@echo -e "$(_BLUE)Compilation Command (example): \n$(_YELLOW)$(JAVAC) $(JAVACFLAGS) -d $(BIN_DIR) -sourcepath $(SRC_DIR) $(SRC_DIR)/avaj_launcher/util/CoordinatesValidator.java$(_WHITE)"
 	@echo -e "$(_BLUE)Execution Command (example): \n$(_YELLOW)$(JAVA) -cp $(BIN_DIR) Simulation ../scenario.txt$(_WHITE)"
+	@echo -e "$(_BLUE)Bonus Execution Command (example): \n$(_YELLOW)$(JAVA) -cp $(BIN_DIR) SimulationBonus ../scenario.txt$(_WHITE)"
 
 
 # Remove compiled classes
@@ -88,9 +129,9 @@ fclean: clean
 	@echo -e "$(_WHITE)Nothing extra to remove for Java project.$(_NC)"
 
 # Remove and rebuild everything
-re: fclean all
+re: fclean all bonus
 
-.PHONY: all show clean fclean re
+.PHONY: all show clean fclean re run runBonus bonus
 
 .ONESHELL:
 
