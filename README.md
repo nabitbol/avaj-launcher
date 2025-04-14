@@ -36,5 +36,6 @@ My bonus
 - [x] Incorporate a Makefile to build the project.
 - [ ] Parallelize the simulation:
     - [ ] Add thread safety to the singletons.
-- [ ] Get weather from the OpenWeatherMap API.
+- [x] Get weather from the weather API. (api.open-meteo.com)
 - [ ] Add a UI to the simulation
+- [ ] Add the ability to insert custom weather configuration with logs
