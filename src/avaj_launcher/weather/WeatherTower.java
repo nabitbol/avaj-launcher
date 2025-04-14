@@ -14,16 +14,16 @@ public class WeatherTower extends Tower {
     }
 
     public void register(Aircraft observer) {
-        // if (isRegistered(observer)) {
-        //     System.out.println("Error: " + observer + " already registered");
-        // } else {
-        register(observer);
-        System.out.printf("Tower says: %s#%s(%d): register to weather tower.\n",
-                observer.getClass().getSimpleName(),
-                observer.getName(),
-                observer.getId()
-        );
-        // }
+        if (isRegistered(observer)) {
+            System.out.println("Error: " + observer + " already registered");
+        } else {
+            register(observer);
+            System.out.printf("Tower says: %s#%s(%d): register to weather tower.\n",
+                    observer.getClass().getSimpleName(),
+                    observer.getName(),
+                    observer.getId()
+            );
+        }
     }
 
     public void unregister(Aircraft observer) {
