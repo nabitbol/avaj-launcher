@@ -1,5 +1,6 @@
 package avaj_launcher.aircraft;
 
+import avaj_launcher.weather.WeatherTower;
 import java.util.Map;
 
 public abstract class Aircraft extends Flyable {
@@ -36,6 +37,12 @@ public abstract class Aircraft extends Flyable {
 
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public void registerTower(WeatherTower p_tower) {
+        this.weatherTower = p_tower;
+        this.weatherTower.register(this);
     }
 
     protected static Map<AircraftType, int[][]> coordinatesUpdates = Map.of(

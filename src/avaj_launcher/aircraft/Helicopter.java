@@ -7,7 +7,7 @@ public class Helicopter extends Aircraft {
     static final AircraftType AIRCRAFT_TYPE = AircraftType.HELICOPTER;
     static final Map<String, String> LOGS = Map.of(
             "SUN", "This is hot.",
-            "RAIN", "It's raining men",
+            "RAIN", "It's raining men.",
             "FOG", "What the fog?",
             "SNOW", "My rotor is going to freeze!"
     );
