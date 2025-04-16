@@ -25,3 +25,6 @@ replay_pid*
 
 # Makefile generated
 bin/
+
+# Program Output
+simulation.txt

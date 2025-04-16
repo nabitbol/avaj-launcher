@@ -17,7 +17,7 @@ public class WeatherTower extends Tower {
         if (isRegistered(observer)) {
             System.out.println("Error: " + observer + " already registered");
         } else {
-            register(observer);
+            super.register(observer);
             System.out.printf("Tower says: %s#%s(%d): register to weather tower.\n",
                     observer.getClass().getSimpleName(),
                     observer.getName(),
