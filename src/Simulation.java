@@ -11,6 +11,7 @@ import java.nio.file.Path;
 public class Simulation {
 
     WeatherTower weatherTower;
+    int itterationNumber;
 
     private static final int AIRCRAFT_TYPE_INDEX = 0;
     private static final int AIRCRAFT_NAME_INDEX = 1;
@@ -20,6 +21,7 @@ public class Simulation {
 
     public Simulation() {
         this.weatherTower = new WeatherTower();
+        int itterationNumber = 0;
     }
 
     private Aircraft getNewAircraft(String line, AircraftFactory aircraftFactory) {
@@ -74,13 +76,12 @@ public class Simulation {
      */
     public int loadSimulation(Path inputFile) {
         String[] lines;
-        int itterationNumber = 0;
         int lineNumber = 0;
 
         try {
 
             lines = Files.readString(inputFile).split("\n");
-            itterationNumber = getItterationNumber(lines[lineNumber]);
+            this.itterationNumber = getItterationNumber(lines[lineNumber]);
             loadAircrafts(lines, lineNumber + 1);
 
         } catch (FileNotFoundException e) {
@@ -91,8 +92,8 @@ public class Simulation {
         return itterationNumber;
     }
 
-    public void runSimulation(int itterationNumber) {
-        while (itterationNumber-- > 0) {
+    public void runSimulation() {
+        while (this.itterationNumber-- > 0) {
             this.weatherTower.changeWeather();
         }
     }

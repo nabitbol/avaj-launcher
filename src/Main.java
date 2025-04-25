@@ -28,15 +28,14 @@ public class Main {
 
     public static void main(String[] args) {
         Simulation simulation = new Simulation();
-        int itterationNumber = 0;
 
         try {
 
             Path inputFile = getInputFilePath(args);
             // Path outputFile = load config
             // setOutputStream(outputFile);
-            itterationNumber = simulation.loadSimulation(inputFile);
-            simulation.runSimulation(itterationNumber);
+            simulation.loadSimulation(inputFile);
+            simulation.runSimulation();
 
         } catch (IllegalArgumentException e) {
             System.err.printf(e.getMessage());
