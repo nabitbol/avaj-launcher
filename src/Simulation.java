@@ -21,7 +21,7 @@ public class Simulation {
 
     public Simulation() {
         this.weatherTower = new WeatherTower();
-        int itterationNumber = 0;
+        this.itterationNumber = 0;
     }
 
     private Aircraft getNewAircraft(String line, AircraftFactory aircraftFactory) {
@@ -58,14 +58,21 @@ public class Simulation {
         }
     }
 
-    private int getItterationNumber(String line) throws IllegalArgumentException {
-        int itterationNumber = Integer.parseInt(line);
+    private void parseItterationNumber(String line) throws IllegalArgumentException {
+        try {
+            int parsedNumber = Integer.parseInt(line);
 
-        if (itterationNumber < 0) {
-            throw new IllegalArgumentException("Wrong number of itterations.");
+            if (parsedNumber < 0) {
+                throw new IllegalArgumentException("Wrong number of itterations.");
+            }
+
+            this.itterationNumber = parsedNumber;
+        } catch (IllegalArgumentException e) {
+            System.err.printf("Error line 0: %s", e.getMessage());
+            System.exit(-1);
+        } catch (Exception e) {
+            System.err.printf("Error line 0: %s", e.getMessage());
         }
-
-        return itterationNumber;
     }
 
     /**
@@ -81,7 +88,7 @@ public class Simulation {
         try {
 
             lines = Files.readString(inputFile).split("\n");
-            this.itterationNumber = getItterationNumber(lines[lineNumber]);
+            parseItterationNumber(lines[lineNumber]);
             loadAircrafts(lines, lineNumber + 1);
 
         } catch (FileNotFoundException e) {
