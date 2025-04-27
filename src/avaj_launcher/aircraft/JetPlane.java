@@ -4,7 +4,13 @@ import java.util.Map;
 
 public class JetPlane extends Aircraft {
 
-    static final AircraftType AIRCRAFT_TYPE = AircraftType.JETPLANE;
+    static final Map<String, int[]> MOOVES = Map.of(
+            "SUN", new int[]{0, 10, 2},
+            "RAIN", new int[]{0, 5, 0},
+            "FOG", new int[]{0, 1, 0},
+            "SNOW", new int[]{0, 0, 7}
+    );
+
     static final Map<String, String> LOGS = Map.of(
             "SUN", "It's the Sun",
             "RAIN", "It's raining. Better watch out for lightings.",
@@ -19,17 +25,11 @@ public class JetPlane extends Aircraft {
     @Override
     public void updateConditions() {
         final String weather = super.weatherTower.getWeather(super.coordinates);
-        this.coordinates = super.calculateNewCoordinates(
-                AIRCRAFT_TYPE,
-                weather,
-                this.coordinates.getLongitude(),
-                this.coordinates.getLatitude(),
-                this.coordinates.getHeight()
-        );
+        this.coordinates = super.calculateNewCoordinates(MOOVES.get(weather));
 
-        System.out.printf("%s#%s(%d): %s \n", AIRCRAFT_TYPE.getDisplayName(), this.name, this.id, LOGS.get(weather));
+        System.out.printf("%s#%s(%d): %s \n", "JetPlane", this.name, this.id, LOGS.get(weather));
         if (this.coordinates.getHeight() == 0) {
-            System.out.printf("%s#%s(%d): landing.\n", AIRCRAFT_TYPE.getDisplayName(), this.name, this.id);
+            System.out.printf("%s#%s(%d): landing.\n", "JetPlane", this.name, this.id);
             this.weatherTower.unregister(this);
         }
     }
