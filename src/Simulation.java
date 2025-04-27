@@ -7,11 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Spliterator;
+import java.util.stream.Stream;
 
-public class Simulation {
+class Simulation {
 
-    WeatherTower weatherTower;
-    int itterationNumber;
+    final private WeatherTower weatherTower;
+    private int itterationNumber;
+    private int lineNumber;
 
     private static final int AIRCRAFT_TYPE_INDEX = 0;
     private static final int AIRCRAFT_NAME_INDEX = 1;
@@ -22,6 +25,7 @@ public class Simulation {
     public Simulation() {
         this.weatherTower = new WeatherTower();
         this.itterationNumber = 0;
+        this.lineNumber = 0;
     }
 
     private Aircraft getNewAircraft(String line, AircraftFactory aircraftFactory) {
@@ -42,19 +46,17 @@ public class Simulation {
         return aircraft;
     }
 
-    private void loadAircrafts(String[] lines, int lineNumber) {
+    private void loadAircrafts(String line) {
         AircraftFactory aircraftFactory = AircraftFactory.getAircraftFactory();
 
         try {
 
-            while (lineNumber < lines.length) {
-                Aircraft aircraft = getNewAircraft(lines[lineNumber], aircraftFactory);
-                aircraft.registerTower(this.weatherTower);
-                lineNumber++;
-            }
+            Aircraft aircraft = getNewAircraft(line, aircraftFactory);
+            aircraft.registerTower(this.weatherTower);
+            this.lineNumber++;
 
         } catch (Exception e) {
-            System.err.printf("Error line %d: %s", lineNumber, e.getMessage());
+            System.err.printf("Error line %d: %s", this.lineNumber, e.getMessage());
         }
     }
 
@@ -82,14 +84,18 @@ public class Simulation {
      * @author nabitbol
      */
     public int loadSimulation(Path inputFile) {
-        String[] lines;
-        int lineNumber = 0;
+        try (Stream<String> lines = Files.lines(inputFile)) {
+            Spliterator<String> spliterator = lines.spliterator();
 
-        try {
+            spliterator.tryAdvance((line) -> {
+                parseItterationNumber(line);
+                this.lineNumber++;
+            });
 
-            lines = Files.readString(inputFile).split("\n");
-            parseItterationNumber(lines[lineNumber]);
-            loadAircrafts(lines, lineNumber + 1);
+            spliterator.forEachRemaining((line) -> {
+                loadAircrafts(line);
+                this.lineNumber++;
+            });
 
         } catch (FileNotFoundException e) {
             System.err.printf("%s not found.", inputFile);
