@@ -2,124 +2,112 @@
 import avaj_launcher.aircraft.Aircraft;
 import avaj_launcher.aircraft.AircraftFactory;
 import avaj_launcher.aircraft.Coordinates;
-import avaj_launcher.exceptions.InvalidCoordinateValueException;
 import avaj_launcher.weather.WeatherTower;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Spliterator;
+import java.util.stream.Stream;
 
-public class Simulation {
+class Simulation {
 
-    public static boolean verifyArgs(String[] args) {
-        if (args.length != 1) {
-            return false;
-        }
-        return true;
+    final private WeatherTower weatherTower;
+    private int itterationNumber;
+    private int lineNumber;
+
+    private static final int AIRCRAFT_TYPE_INDEX = 0;
+    private static final int AIRCRAFT_NAME_INDEX = 1;
+    private static final int LONGITUDE_INDEX = 2;
+    private static final int LATITUDE_INDEX = 3;
+    private static final int HEIGHT_INDEX = 4;
+
+    public Simulation() {
+        this.weatherTower = new WeatherTower();
+        this.itterationNumber = 0;
+        this.lineNumber = 0;
     }
 
-    public static void handleExceptions(Exception e, int lineNumber) {
-        switch (e) {
-            case IOException exception ->
-                System.err.printf("Error: input file: unable to open %s\n",
-                        exception.getMessage()
-                );
-            case InvalidCoordinateValueException exception ->
-                System.err.printf("Error: parsing(line %d): %s\n",
-                        lineNumber,
-                        exception.getMessage()
-                );
-            case NumberFormatException exception ->
-                System.err.printf("Error: parsing(line %d): Invalid coordinates %s\n",
-                        lineNumber,
-                        exception.getMessage().toLowerCase()
-                );
-            default ->
-                System.err.println("Error: default:" + e.getMessage());
-        }
-        System.exit(0);
-    }
-
-    public static Aircraft getNewAircraft(String line, AircraftFactory aircraftFactory) {
+    private Aircraft getNewAircraft(String line, AircraftFactory aircraftFactory) {
 
         String[] params = line.split(" ");
 
         Coordinates aircraftCoordinates = new Coordinates(
-                Integer.parseInt(params[2]),
-                Integer.parseInt(params[3]),
-                Integer.parseInt(params[4]));
+                Integer.parseInt(params[LONGITUDE_INDEX]),
+                Integer.parseInt(params[LATITUDE_INDEX]),
+                Integer.parseInt(params[HEIGHT_INDEX]));
 
         Aircraft aircraft = aircraftFactory.newAircraft(
-                params[0],
-                params[1],
+                params[AIRCRAFT_TYPE_INDEX],
+                params[AIRCRAFT_NAME_INDEX],
                 aircraftCoordinates
         );
 
         return aircraft;
     }
 
-    public static void runSimulation(WeatherTower weatherTower, int itterationNumber) {
-        while (itterationNumber-- > 0) {
-            weatherTower.changeWeather();
+    private void loadAircrafts(String line) {
+        AircraftFactory aircraftFactory = AircraftFactory.getAircraftFactory();
+
+        try {
+
+            Aircraft aircraft = getNewAircraft(line, aircraftFactory);
+            aircraft.registerTower(this.weatherTower);
+            this.lineNumber++;
+
+        } catch (Exception e) {
+            System.err.printf("Error line %d: %s", this.lineNumber, e.getMessage());
         }
     }
 
-    public static void setOutputStream(String outputFile) throws FileNotFoundException, IOException {
-        Files.delete(Paths.get(outputFile));
-        FileOutputStream fileOutputStream = new FileOutputStream(outputFile, true);
-        PrintStream outputStream = new PrintStream(fileOutputStream);
-        System.setOut(outputStream);
-    }
+    private void parseItterationNumber(String line) throws IllegalArgumentException {
+        try {
+            int parsedNumber = Integer.parseInt(line);
 
-    static public int loadSimulation(WeatherTower weatherTower, Path inputFile) {
-        int itterationNumber = 0;
-        int lineNumber = 0;
-
-        try (BufferedReader reader = Files.newBufferedReader(inputFile);) {
-            AircraftFactory aircraftFactory = AircraftFactory.getAircraftFactory();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                if (lineNumber == 0) {
-                    itterationNumber = Integer.parseInt(line);
-                    lineNumber++;
-                    continue;
-                }
-                Aircraft aircraft = getNewAircraft(line, aircraftFactory);
-                aircraft.registerTower(weatherTower);
-                lineNumber++;
+            if (parsedNumber < 0) {
+                throw new IllegalArgumentException("Wrong number of itterations.");
             }
 
+            this.itterationNumber = parsedNumber;
+        } catch (IllegalArgumentException e) {
+            System.err.printf("Error line 0: %s", e.getMessage());
+            System.exit(-1);
         } catch (Exception e) {
-            handleExceptions(e, lineNumber);
+            System.err.printf("Error line 0: %s", e.getMessage());
+        }
+    }
+
+    /**
+     * @param WeatherTower
+     * @param Path
+     * @return The number of itteration for the simulation.
+     * @author nabitbol
+     */
+    public int loadSimulation(Path inputFile) {
+        try (Stream<String> lines = Files.lines(inputFile)) {
+            Spliterator<String> spliterator = lines.spliterator();
+
+            spliterator.tryAdvance((line) -> {
+                parseItterationNumber(line);
+                this.lineNumber++;
+            });
+
+            spliterator.forEachRemaining((line) -> {
+                loadAircrafts(line);
+                this.lineNumber++;
+            });
+
+        } catch (FileNotFoundException e) {
+            System.err.printf("%s not found.", inputFile);
+        } catch (IOException e) {
+            System.err.printf("%s couldn't read from file", inputFile);
         }
         return itterationNumber;
     }
 
-    public static void main(String[] args) {
-        WeatherTower weatherTower = new WeatherTower();
-        int itterationNumber = 0;
-
-        if (!verifyArgs(args)) {
-            System.err.println("Invalid number of arguments");
-            System.exit(0);
-        }
-
-        Path inputFile = Paths.get(args[0]);
-        String outputFile = "simulation.txt";
-
-        // getSimulationConfig();
-        try {
-            setOutputStream(outputFile);
-            itterationNumber = loadSimulation(weatherTower, inputFile);
-            runSimulation(weatherTower, itterationNumber);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(0);
+    public void runSimulation() {
+        while (this.itterationNumber-- > 0) {
+            this.weatherTower.changeWeather();
         }
     }
 }
