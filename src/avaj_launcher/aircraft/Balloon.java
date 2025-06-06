@@ -30,7 +30,7 @@ public class Balloon extends Aircraft {
         System.out.printf("%s#%s(%d): %s \n", "Balloon", this.name, this.id, LOGS.get(weather));
         if (this.coordinates.getHeight() == 0) {
             System.out.printf("%s#%s(%d): landing.\n", "Balloon", this.name, this.id);
-            this.weatherTower.unregister(this);
+            this.toUnregister = true;
         }
     }
 }

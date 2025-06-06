@@ -53,6 +53,36 @@ JAVACFLAGS	=	-g
 
 .DEFAULT_GOAL = all
 
+# Help target: Display available commands
+help:
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  all         Compile all Java source files."
+	@echo "  $(NAME)    Create the main executable."
+	@echo "  run         Run the main Simulation with ./scenario.txt."
+	@echo "  bonus       Create the bonus executable."
+	@echo "  runBonus    Run the SimulationBonus with ./scenario.txt."
+	@echo "  show        Display Makefile macro details."
+	@echo "  clean       Remove compiled class files."
+	@echo "  fclean      Remove all build artifacts (currently same as clean)."
+	@echo "  re          Rebuild everything from scratch."
+	@echo ""
+	@echo "Variables (can be overridden):"
+	@echo "  JAVAC       Java compiler command (default: $(JAVAC))"
+	@echo "  JAVA        Java runtime command (default: $(JAVA))"
+	@echo "  JAVACFLAGS  Java compiler flags (default: $(JAVACFLAGS))"
+	@echo "  SRC_DIR     Source code directory (default: $(SRC_DIR))"
+	@echo "  BIN_DIR     Output directory for compiled classes (default: $(BIN_DIR))"
+	@echo ""
+	@echo "Colors:"
+	@echo "  $(_GREEN)Green$(_NC) - Success messages"
+	@echo "  $(_BLUE)Blue$(_NC)  - Information messages"
+	@echo "  $(_YELLOW)Yellow$(_NC) - Important names/paths"
+	@echo ""
+	@echo "Example:"
+	@echo "  make run"
+
 # Build target: create the executable (runs the main Simulation)
 $(NAME): $(OBJ) $(SIMULATION_OBJ)
 	@echo -e "-----\nCreating Executable $(_YELLOW)$@$(_WHITE) ..."

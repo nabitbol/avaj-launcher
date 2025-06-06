@@ -26,9 +26,17 @@ class Tower {
     }
 
     protected void conditionChanged() {
-        for (int i = 0; i < observers.size(); i++) {
-            observers.get(i).updateConditions();
+        List<Flyable> observersToUnregister = new ArrayList<>(this.observers);
+
+        for (Flyable observer : this.observers) {
+            observer.updateConditions();
+            if (observer.getToUnregister()) {
+                // List all observers to be removed and 
+                observersToUnregister.add(observer);
+            }
         }
+
+        this.observers.removeAll(observersToUnregister);
     }
 
 }

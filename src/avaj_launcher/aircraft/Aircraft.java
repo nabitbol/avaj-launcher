@@ -78,7 +78,7 @@ public abstract class Aircraft extends Flyable {
         System.out.printf("Current weather:%s for %s#%s(%d)", weather, "Aircraft", this.name, this.id);
         if (this.coordinates.getHeight() == 0) {
             System.out.printf("%s#%s(%d): landing.\n", "Aircraft", this.name, this.id);
-            this.weatherTower.unregister(this);
+            this.toUnregister = true;
         }
     }
 

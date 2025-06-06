@@ -5,6 +5,10 @@ import avaj_launcher.aircraft.Coordinates;
 class WeatherProvider {
 
     private static WeatherProvider weatherProvider;
+    /**
+     * Could be enhanced via an enum, but we have to rely on the diagram
+     * provided by the subject to build this class.
+     */
     private String[] weather = {"RAIN", "FOG", "SUN", "SNOW"};
 
     private WeatherProvider() {
